@@ -3,7 +3,7 @@ if (!defined('ABSPATH')) { exit; }
 
 class ICD_SDM_Elementor_Widget extends \Elementor\Widget_Base {
     public function get_name() { return 'icd_sdm_documents'; }
-    public function get_title() { return 'Central de Documentos SDM'; }
+    public function get_title() { return 'Downloads'; }
     public function get_icon() { return 'eicon-folder'; }
     public function get_categories() { return array('general'); }
     public function get_keywords() { return array('sdm', 'documentos', 'download', 'categorias', 'acordeao', 'accordion'); }
@@ -75,6 +75,8 @@ class ICD_SDM_Elementor_Widget extends \Elementor\Widget_Base {
             'description' => 'Em “somente folhas”, documentos vinculados apenas a categorias-pai não aparecem. Não são movidos automaticamente.'));
         $this->add_control('show_empty', array('label' => 'Mostrar categorias vazias', 'type' => $C::SWITCHER, 'default' => ''));
         $this->add_control('show_counts', array('label' => 'Mostrar contador de downloads', 'type' => $C::SWITCHER, 'default' => 'yes'));
+        $this->add_control('show_button', array('label' => 'Exibir botão de download', 'type' => $C::SWITCHER,
+            'default' => 'yes', 'description' => 'Oculta o botão simples; formulários de senha, termos e avisos SDM continuam disponíveis.'));
         $this->add_control('show_description', array('label' => 'Mostrar descrição da categoria', 'type' => $C::SWITCHER, 'default' => ''));
         $this->add_control('orderby', array('label' => 'Ordenar documentos por', 'type' => $C::SELECT, 'default' => 'title',
             'options' => array('title' => 'Título', 'date' => 'Data de publicação', 'modified' => 'Última alteração', 'menu_order' => 'Ordem do cadastro')));
@@ -165,7 +167,7 @@ class ICD_SDM_Elementor_Widget extends \Elementor\Widget_Base {
         $this->end_controls_section();
 
         // Uma classe adicional no seletor supera os estilos de cor do botão SDM.
-        $B = $W . ' .icd-action a.sdm_download';
+        $B = $W . ' .icd-action .sdm_download';
         $this->start_controls_section('style_button', array('label' => 'Botão de download', 'tab' => $C::TAB_STYLE));
         $this->typography('button_type', $B);
         $this->dimensions('button_padding', 'Espaçamento interno', $B);
@@ -194,6 +196,7 @@ class ICD_SDM_Elementor_Widget extends \Elementor\Widget_Base {
         echo ICD_SDM_Central::render(array(
             'scope' => isset($s['scope']) ? $s['scope'] : 'all',
             'roots' => isset($s['roots']) ? $s['roots'] : array(),
+            'show_button' => !array_key_exists('show_button', $s) || 'yes' === $s['show_button'],
             'show_counts' => !empty($s['show_counts']),
             'show_empty' => !empty($s['show_empty']),
             'show_description' => !empty($s['show_description']),

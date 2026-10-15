@@ -90,21 +90,61 @@ final class ICD_SDM_Tree_Renderer {
         return $html . '</div></details>';
     }
 
+    private function document_title_link($download_html, $title, $action_id) {
+        $label = esc_html($title);
+        // Nunca transformar formulários de senha, termos ou CAPTCHA em link direto.
+        if (preg_match('~<(?:form|input|button|select|textarea)\b~i', $download_html)) {
+            return array('<a class="icd-title-download" href="#' .
+                esc_attr($action_id) . '">' . $label . '</a>', true);
+        }
+        // Apenas clona a âncora oficial do SDM; não constrói URL de arquivo.
+        $pattern = '~<a\b(?:[^>"\']|"[^"]*"|\'[^\']*\')*>~i';
+        if (preg_match_all($pattern, $download_html, $links)) {
+            foreach ($links[0] as $opening) {
+                if (!preg_match('~\bclass\s*=\s*(["\'])(.*?)\1~is', $opening, $classes) ||
+                    !preg_match('~(?:^|\s)sdm_download(?:\s|$)~', $classes[2]) ||
+                    !preg_match('~\bhref\s*=\s*(["\'])(.*?)\1~is', $opening)) {
+                    continue;
+                }
+                // Evita duplicar IDs, preservando destino, classes e atributos SDM.
+                $opening = preg_replace('~\s+id\s*=\s*(["\'])(.*?)\1~is', '', $opening);
+                $opening = preg_replace_callback('~\bclass\s*=\s*(["\'])(.*?)\1~is',
+                    function ($match) {
+                        return 'class="' . esc_attr(trim($match[2] . ' icd-title-download')) . '"';
+                    }, $opening, 1);
+                return array($opening . $label . '</a>', false);
+            }
+        }
+        // Indisponibilidade/permissões: mantém a mensagem oficial, mesmo sem botão.
+        return array($label, true);
+    }
+
     private function document($document) {
         $id = (int) $document->ID;
-        $html = '<li class="icd-document"><div class="icd-document-info"><span class="icd-document-title">' .
-            esc_html(get_the_title($id)) . '</span>';
-        if (!empty($this->args['show_counts']) && shortcode_exists('sdm_download_counter')) {
-            $html .= '<div class="icd-counter">' . do_shortcode('[sdm_download_counter id="' . $id . '"]') . '</div>';
-        }
-        // Não interpola entrada livre dentro do shortcode: caracteres delimitadores removidos.
-        $label = sanitize_text_field((string) $this->args['button_text']);
+        $action_id = wp_unique_id('icd-download-action-');
+        $label = isset($this->args['button_text']) ? (string) $this->args['button_text'] : 'Baixar';
+        $label = sanitize_text_field($label);
         $label = str_replace(array('[', ']', '"', "'", "\r", "\n"), '', $label);
-        $button = '[sdm_download id="' . $id . '" fancy="0"';
+        // Cor neutra evita as regras de cor !important fornecidas pelo SDM.
+        $button = '[sdm_download id="' . $id . '" fancy="0" color="icd-neutral"';
         if ('' !== $label) { $button .= ' button_text="' . esc_attr($label) . '"'; }
         $button .= ']';
-        // SDM mantém a geração de URL, formulário de senha, termos e verificações.
-        $html .= '</div><div class="icd-action">' . do_shortcode($button) . '</div></li>';
-        return $html;
+        // Executa o shortcode uma vez; preserva formulários e verificações SDM.
+        $download_html = do_shortcode($button);
+        list($title_html, $requires_ui) = $this->document_title_link(
+            $download_html, get_the_title($id), $action_id);
+        $show_button = !array_key_exists('show_button', $this->args) || !empty($this->args['show_button']);
+        $html = '<li class="icd-document"><div class="icd-document-info">' .
+            '<span class="icd-document-title">' . $title_html . '</span>';
+        if (!empty($this->args['show_counts']) && shortcode_exists('sdm_download_counter')) {
+            $html .= '<div class="icd-counter">' .
+                do_shortcode('[sdm_download_counter id="' . $id . '"]') . '</div>';
+        }
+        $html .= '</div>';
+        if ($show_button || $requires_ui) {
+            $html .= '<div class="icd-action" id="' . esc_attr($action_id) .
+                '" tabindex="-1">' . $download_html . '</div>';
+        }
+        return $html . '</li>';
     }
 }

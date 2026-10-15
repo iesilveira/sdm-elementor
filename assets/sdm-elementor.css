@@ -40,18 +40,18 @@
     display:flex; align-items:center; justify-content:space-between; gap:16px;
     margin:0; padding:14px 0; list-style:none; border:0; border-bottom:1px solid #e4e9ef;
 }
-.icd-central .icd-document-info { flex:1; min-width:0; align-self:stretch; }
-.icd-central .icd-document-title { display:block; font-weight:500; overflow-wrap:anywhere; }
+.icd-central .icd-document-info { flex:1; min-width:0; display:flex; flex-direction:column; justify-content:center; align-self:center; }
+.icd-central .icd-document-title { display:block; margin:0; font-weight:500; line-height:1.45; overflow-wrap:anywhere; }
 .icd-central .icd-counter { margin-top:5px; font-size:.85em; color:#596779; }
 .icd-central .icd-counter .sdm_download_count { margin:0; padding:0; color:inherit; font:inherit; }
-.icd-central .icd-action { max-width:100%; flex-shrink:0; }
+.icd-central .icd-action { display:flex; align-items:center; align-self:center; max-width:100%; flex-shrink:0; }
 .icd-central .icd-action .sdm_download_link { margin:0; }
-.icd-central .icd-action a.sdm_download {
+.icd-central .icd-action .sdm_download {
     display:inline-block; padding:10px 18px; margin:0; border:1px solid #175cd3; border-radius:4px;
     background:#175cd3; background-image:none; color:#fff; text-decoration:none; font-weight:600;
     font-size:.9rem; line-height:1.5; box-shadow:none; text-shadow:none; white-space:normal;
 }
-.icd-central .icd-action a.sdm_download:hover { background:#1249aa; color:#fff; }
+.icd-central .icd-action .sdm_download:hover { background:#1249aa; color:#fff; }
 .icd-central .icd-action input { max-width:100%; }
 .icd-central .icd-empty { margin:0; color:#596779; }
 .icd-central summary:focus-visible, .icd-central a:focus-visible, .icd-central input:focus-visible {
@@ -60,7 +60,17 @@
 @media (max-width:767px) {
     .icd-central .icd-heading { padding:13px; }
     .icd-central .icd-body { padding:10px; }
-    .icd-central .icd-document { flex-direction:column; align-items:flex-start; gap:10px; }
-    .icd-central .icd-action { width:100%; flex-shrink:1; }
+    .icd-central .icd-document { flex-direction:row; align-items:center; gap:10px; }
+    .icd-central .icd-action { width:auto; flex-shrink:0; }
 }
 @media (prefers-reduced-motion:reduce) { .icd-central .icd-heading { transition:none; } }
+/* SPSES 2.1: link do título sem a aparência de botão SDM. */
+.icd-central .icd-document-title > a.icd-title-download {
+    display:inline !important; float:none !important; width:auto !important;
+    margin:0 !important; padding:0 !important; border:0 !important;
+    background:none !important; background-image:none !important;
+    color:inherit !important; font:inherit !important; line-height:inherit !important;
+    box-shadow:none !important; text-shadow:none !important; filter:none !important;
+    text-decoration:none; vertical-align:baseline;
+}
+.icd-central .icd-document-title > a.icd-title-download:hover { text-decoration:underline; }

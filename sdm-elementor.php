@@ -1,30 +1,28 @@
 <?php
 /**
- * Plugin Name: Central de Documentos para SDM
- * Description: Hierarquia de categorias SDM em acordeão e widget próprio para Elementor.
- * Version: 2.0.0
+ * Plugin Name: SPSES - Documentos para Download
+ * Description: Complemento para o plugin Simple Download Monitor, faz com que as categorias dos downloads sejam organizadas visualmente por hierarquia em páginas construídas com elementor
+ * Version: 2.1.1
  * Requires at least: 6.0
  * Requires PHP: 7.4
- * Author: Central de Documentos
+ * Requires Plugins: elementor, simple-download-monitor
+ * Author: Ismael Elói da Silveira Silva
  * License: GPL-2.0-or-later
- * Text Domain: central-documentos-sdm
+ * Text Domain: sdm-elementor
  */
 if (!defined('ABSPATH')) { exit; }
 
 final class ICD_SDM_Central {
-    const VERSION = '2.0.0';
+    const VERSION = '2.1.1';
     const OPTION = 'icd_sdm_central_options';
     const GROUP = 'icd_sdm_central_group';
 
     public static function boot() {
-        add_action('admin_menu', array(__CLASS__, 'menu'));
-        add_action('admin_init', array(__CLASS__, 'settings'));
         add_action('admin_notices', array(__CLASS__, 'notice'));
         add_action('wp_enqueue_scripts', array(__CLASS__, 'assets'), 5);
         add_action('elementor/frontend/after_register_styles', array(__CLASS__, 'assets'));
         add_action('elementor/frontend/after_register_scripts', array(__CLASS__, 'assets'));
         add_action('elementor/widgets/register', array(__CLASS__, 'widget'));
-        add_filter('plugin_action_links_' . plugin_basename(__FILE__), array(__CLASS__, 'action_links'));
         add_shortcode('central_documentos', array(__CLASS__, 'shortcode'));
     }
 
@@ -42,11 +40,11 @@ final class ICD_SDM_Central {
 
     public static function assets() {
         if (!wp_style_is('icd-central-style', 'registered')) {
-            wp_register_style('icd-central-style', plugins_url('assets/central-documentos.css', __FILE__),
+            wp_register_style('icd-central-style', plugins_url('assets/sdm-elementor.css', __FILE__),
                 array(), self::VERSION);
         }
         if (!wp_script_is('icd-central-script', 'registered')) {
-            wp_register_script('icd-central-script', plugins_url('assets/central-documentos.js', __FILE__),
+            wp_register_script('icd-central-script', plugins_url('assets/sdm-elementor.js', __FILE__),
                 array(), self::VERSION, true);
         }
     }
@@ -61,10 +59,14 @@ final class ICD_SDM_Central {
         if (!current_user_can('manage_options')) { return; }
         if (!self::ready()) {
             echo '<div class="notice notice-warning"><p>' .
-                esc_html__('Central de Documentos: ative o Simple Download Monitor para listar os documentos.', 'central-documentos-sdm') .
+                esc_html__('SPSES - Documentos para Download: ative o Simple Download Monitor (SDM).', 'sdm-elementor') .
                 '</p></div>';
         }
-        // Elementor é opcional: o shortcode funciona sem ele.
+        if (!did_action('elementor/loaded') && !class_exists('\Elementor\Plugin')) {
+            echo '<div class="notice notice-warning"><p>' .
+                esc_html__('SPSES - Documentos para Download: ative o Elementor para utilizar o widget Downloads.', 'sdm-elementor') .
+                '</p></div>';
+        }
     }
 
     public static function action_links($links) {
@@ -115,10 +117,10 @@ final class ICD_SDM_Central {
         $terms = get_terms(array('taxonomy' => 'sdm_categories', 'hide_empty' => false, 'orderby' => 'name'));
         ?>
         <div class="wrap">
-            <h1>Central de Documentos — 2.0</h1>
+            <h1>SPSES - Documentos para Download — <?php echo esc_html(self::VERSION); ?></h1>
             <p>A hierarquia é cadastrada em <strong>Downloads → Categorias</strong>, usando a categoria-pai.
             O complemento lê essa estrutura; não cria uma segunda hierarquia.</p>
-            <p><strong>Elementor:</strong> procure o widget <strong>Central de Documentos SDM</strong> na categoria Geral.
+            <p><strong>Elementor:</strong> procure o widget <strong>Downloads</strong> na categoria Geral.
             Escolha nele todas as categorias principais ou apenas alguns ramos. As opções abaixo são o padrão do shortcode.</p>
             <p>Shortcode: <code>[central_documentos]</code>.
             Hierarquia completa: <code>[central_documentos todas="1"]</code>.</p>
@@ -166,7 +168,7 @@ final class ICD_SDM_Central {
 
     public static function shortcode($atts = array()) {
         $o = self::options();
-        $a = shortcode_atts(array('categorias' => '', 'todas' => '0'), $atts, 'central_documentos');
+        $a = shortcode_atts(array('categorias' => '', 'todas' => '0', 'botao' => '1'), $atts, 'central_documentos');
         $roots = trim((string) $a['categorias']) !== '' ? wp_parse_id_list($a['categorias']) : wp_parse_id_list($o['categories']);
         $all = '1' === (string) $a['todas'];
         if (!$all && !$roots) {
@@ -179,7 +181,8 @@ final class ICD_SDM_Central {
         wp_enqueue_style('icd-central-style');
         wp_enqueue_script('icd-central-script');
         return self::render(array('scope' => $all ? 'all' : 'selected', 'roots' => $roots,
-            'show_counts' => !empty($o['show_counts']), 'show_empty' => !empty($o['show_empty'])));
+            'show_counts' => !empty($o['show_counts']), 'show_empty' => !empty($o['show_empty']),
+            'show_button' => '0' !== (string) $a['botao']));
     }
 
     public static function render($args = array()) {
@@ -190,7 +193,7 @@ final class ICD_SDM_Central {
             'scope' => 'all', 'roots' => array(), 'show_counts' => true, 'show_empty' => false,
             'show_description' => false, 'documents_mode' => 'direct', 'orderby' => 'title', 'order' => 'ASC',
             'single' => true, 'initial' => 'none', 'icon_side' => 'end',
-            'button_text' => 'Baixar', 'empty_text' => 'Nenhum documento nesta categoria.',
+            'button_text' => 'Baixar', 'show_button' => true, 'empty_text' => 'Nenhum documento nesta categoria.',
             'icon_closed' => array(), 'icon_open' => array(),
         ));
         $terms = get_terms(array('taxonomy' => 'sdm_categories', 'hide_empty' => false, 'orderby' => 'name', 'order' => 'ASC'));
