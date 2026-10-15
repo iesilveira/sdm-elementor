@@ -2,7 +2,7 @@
 /**
  * Plugin Name: SPSES - Documentos para Download
  * Description: Complemento para o plugin Simple Download Monitor, faz com que as categorias dos downloads sejam organizadas visualmente por hierarquia em páginas construídas com elementor
- * Version: 2.1.1
+ * Version: 2.1.5
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Requires Plugins: elementor, simple-download-monitor
@@ -13,12 +13,20 @@
 if (!defined('ABSPATH')) { exit; }
 
 final class ICD_SDM_Central {
-    const VERSION = '2.1.1';
+    const VERSION = '2.1.5';
     const OPTION = 'icd_sdm_central_options';
     const GROUP = 'icd_sdm_central_group';
 
     public static function boot() {
         add_action('admin_notices', array(__CLASS__, 'notice'));
+        require_once __DIR__ . '/includes/class-file-type-icons.php';
+        SPSES_SDM_File_Type_Icons::boot(__FILE__, self::VERSION);
+        require_once __DIR__ . '/includes/class-file-extension-badge.php';
+        SPSES_SDM_File_Extension_Badge::boot(__FILE__, self::VERSION);
+        if (is_admin()) {
+            require_once __DIR__ . '/includes/class-sdm-editor-layout.php';
+            SPSES_SDM_Download_Editor_Layout::boot(__FILE__, self::VERSION);
+        }
         add_action('wp_enqueue_scripts', array(__CLASS__, 'assets'), 5);
         add_action('elementor/frontend/after_register_styles', array(__CLASS__, 'assets'));
         add_action('elementor/frontend/after_register_scripts', array(__CLASS__, 'assets'));

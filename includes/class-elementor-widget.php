@@ -188,6 +188,168 @@ class ICD_SDM_Elementor_Widget extends \Elementor\Widget_Base {
             'options' => array('auto' => 'Automática', '100%' => 'Toda a largura da área do botão'),
             'selectors' => array($B => 'width: {{VALUE}}; text-align:center;')));
         $this->end_controls_section();
+
+        // SPSES file type icons: 2.1.3.
+        $this->start_controls_section('spses_file_icons_content', array(
+            'label' => 'Ícones por extensão',
+            'tab' => $C::TAB_CONTENT,
+        ));
+
+        $this->add_control('show_file_type_icons', array(
+            'label' => 'Exibir ícones dos arquivos',
+            'type' => $C::SWITCHER,
+            'default' => 'yes',
+            'description' => 'Configure as extensões em Downloads → Ícones.',
+        ));
+
+        $this->end_controls_section();
+
+        $this->start_controls_section('spses_file_icons_style', array(
+            'label' => 'Ícones dos arquivos',
+            'tab' => $C::TAB_STYLE,
+        ));
+
+        $this->add_control('spses_file_icon_color', array(
+            'label' => 'Cor',
+            'type' => $C::COLOR,
+            'selectors' => array(
+                $W . ' .icd-file-type-icon' => 'color: {{VALUE}};',
+            ),
+        ));
+
+        $this->add_responsive_control('spses_file_icon_size', array(
+            'label' => 'Tamanho',
+            'type' => $C::SLIDER,
+            'size_units' => array('px', 'em'),
+            'range' => array(
+                'px' => array('min' => 8, 'max' => 80),
+                'em' => array('min' => 0.5, 'max' => 5, 'step' => 0.1),
+            ),
+            'selectors' => array(
+                $W . ' .icd-file-type-icon' =>
+                    'font-size: {{SIZE}}{{UNIT}};',
+            ),
+        ));
+
+        $this->add_responsive_control('spses_file_icon_gap', array(
+            'label' => 'Espaço entre ícone e título',
+            'type' => $C::SLIDER,
+            'size_units' => array('px', 'em'),
+            'range' => array(
+                'px' => array('min' => 0, 'max' => 60),
+                'em' => array('min' => 0, 'max' => 4, 'step' => 0.1),
+            ),
+            'selectors' => array(
+                $W . ' .icd-document-title' =>
+                    '--icd-file-icon-gap: {{SIZE}}{{UNIT}};',
+            ),
+        ));
+
+        $this->end_controls_section();
+
+
+        // SPSES extension badge controls: 2.1.4.
+        $this->start_controls_section('spses_extension_badge_content', array(
+            'label' => 'Extensão do arquivo',
+            'tab' => $C::TAB_CONTENT,
+        ));
+
+        $this->add_control('show_file_extension_badge', array(
+            'label' => 'Exibir badge da extensão',
+            'type' => $C::SWITCHER,
+            'default' => 'yes',
+            'description' => 'Mostra a extensão depois do título, sem ponto inicial.',
+        ));
+
+        $this->end_controls_section();
+
+        $this->start_controls_section('spses_extension_badge_style', array(
+            'label' => 'Badge da extensão',
+            'tab' => $C::TAB_STYLE,
+            'condition' => array(
+                'show_file_extension_badge' => 'yes',
+            ),
+        ));
+
+        $badge_selector = $W . ' .icd-file-extension-badge';
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Typography::get_type(),
+            array(
+                'name' => 'spses_extension_badge_typography',
+                'selector' => $badge_selector,
+            )
+        );
+
+        $this->add_control('spses_extension_badge_color', array(
+            'label' => 'Cor do texto',
+            'type' => $C::COLOR,
+            'selectors' => array(
+                $badge_selector => 'color: {{VALUE}};',
+            ),
+        ));
+
+        $this->add_control('spses_extension_badge_background', array(
+            'label' => 'Cor de fundo',
+            'type' => $C::COLOR,
+            'selectors' => array(
+                $badge_selector => 'background-color: {{VALUE}};',
+            ),
+        ));
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Border::get_type(),
+            array(
+                'name' => 'spses_extension_badge_border',
+                'selector' => $badge_selector,
+            )
+        );
+
+        $this->add_responsive_control('spses_extension_badge_radius', array(
+            'label' => 'Arredondamento',
+            'type' => $C::DIMENSIONS,
+            'size_units' => array('px', '%', 'em'),
+            'selectors' => array(
+                $badge_selector =>
+                    'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+            ),
+        ));
+
+        $this->add_responsive_control('spses_extension_badge_padding', array(
+            'label' => 'Preenchimento interno',
+            'type' => $C::DIMENSIONS,
+            'size_units' => array('px', 'em', 'rem'),
+            'selectors' => array(
+                $badge_selector =>
+                    'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+            ),
+        ));
+
+        $this->add_responsive_control('spses_extension_badge_gap', array(
+            'label' => 'Distância do título',
+            'type' => $C::SLIDER,
+            'size_units' => array('px', 'em', 'rem'),
+            'range' => array(
+                'px' => array('min' => 0, 'max' => 100),
+                'em' => array('min' => 0, 'max' => 6, 'step' => 0.1),
+                'rem' => array('min' => 0, 'max' => 6, 'step' => 0.1),
+            ),
+            'selectors' => array(
+                $W . ' .icd-file-title-label' =>
+                    '--icd-extension-badge-gap: {{SIZE}}{{UNIT}};',
+            ),
+        ));
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Box_Shadow::get_type(),
+            array(
+                'name' => 'spses_extension_badge_shadow',
+                'selector' => $badge_selector,
+            )
+        );
+
+        $this->end_controls_section();
+
     }
 
     protected function render() {
@@ -197,6 +359,8 @@ class ICD_SDM_Elementor_Widget extends \Elementor\Widget_Base {
             'scope' => isset($s['scope']) ? $s['scope'] : 'all',
             'roots' => isset($s['roots']) ? $s['roots'] : array(),
             'show_button' => !array_key_exists('show_button', $s) || 'yes' === $s['show_button'],
+            'show_file_extension_badge' => !array_key_exists('show_file_extension_badge', $s) || 'yes' === $s['show_file_extension_badge'],
+            'show_file_type_icons' => !array_key_exists('show_file_type_icons', $s) || 'yes' === $s['show_file_type_icons'],
             'show_counts' => !empty($s['show_counts']),
             'show_empty' => !empty($s['show_empty']),
             'show_description' => !empty($s['show_description']),

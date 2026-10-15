@@ -134,8 +134,34 @@ final class ICD_SDM_Tree_Renderer {
         list($title_html, $requires_ui) = $this->document_title_link(
             $download_html, get_the_title($id), $action_id);
         $show_button = !array_key_exists('show_button', $this->args) || !empty($this->args['show_button']);
+        $file_icon_html = '';
+        $show_file_icons = !array_key_exists('show_file_type_icons', $this->args)
+            || !empty($this->args['show_file_type_icons']);
+
+        if ($show_file_icons && class_exists('SPSES_SDM_File_Type_Icons')) {
+            $file_icon_html = SPSES_SDM_File_Type_Icons::render_for_document($id);
+        }
+
+        $extension_badge_html = '';
+        $show_extension_badge =
+            !array_key_exists('show_file_extension_badge', $this->args)
+            || !empty($this->args['show_file_extension_badge']);
+
+        if ($show_extension_badge
+            && class_exists('SPSES_SDM_File_Extension_Badge')) {
+            $extension_badge_html =
+                SPSES_SDM_File_Extension_Badge::render_for_document($id);
+        }
+
+        $title_label_html = '<span class="icd-file-title-label">'
+            . '<span class="icd-file-title-text">'
+            . $title_html
+            . '</span>'
+            . $extension_badge_html
+            . '</span>';
+
         $html = '<li class="icd-document"><div class="icd-document-info">' .
-            '<span class="icd-document-title">' . $title_html . '</span>';
+            '<span class="icd-document-title">' . $file_icon_html . $title_label_html . '</span>';
         if (!empty($this->args['show_counts']) && shortcode_exists('sdm_download_counter')) {
             $html .= '<div class="icd-counter">' .
                 do_shortcode('[sdm_download_counter id="' . $id . '"]') . '</div>';

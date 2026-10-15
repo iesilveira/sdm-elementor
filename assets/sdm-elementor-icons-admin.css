@@ -1,0 +1,23 @@
+/* SPSES: administração de ícones. */
+.spses-sdm-icons-admin .spses-icons-table th:first-child { width:180px; }
+.spses-sdm-icons-admin .spses-icons-table td { vertical-align:middle; }
+.spses-sdm-icons-admin .spses-extension { width:150px; max-width:100%; }
+.spses-sdm-icons-admin .spses-default-icon { padding:16px; background:#fff; border:1px solid #c3c4c7; }
+.spses-sdm-icons-admin .spses-icon-preview { display:inline-flex; align-items:center; justify-content:center; width:36px; min-height:30px; font-size:23px; vertical-align:middle; }
+.spses-sdm-icons-admin .spses-icon-name { display:inline-block; min-width:180px; max-width:100%; overflow-wrap:anywhere; vertical-align:middle; }
+#spses-icon-dialog { width:min(1000px,90vw); max-height:85vh; padding:20px; border:1px solid #8c8f94; box-sizing:border-box; }
+#spses-icon-dialog::backdrop { background:rgba(0,0,0,.5); }
+#spses-icon-dialog .spses-dialog-header { display:flex; align-items:center; justify-content:space-between; gap:15px; }
+#spses-icon-dialog .spses-dialog-header h2 { margin:0; }
+#spses-icon-dialog .spses-picker-filters { display:flex; gap:16px; flex-wrap:wrap; margin-top:20px; }
+#spses-icon-dialog .spses-picker-filters label { display:flex; flex-direction:column; gap:5px; }
+#spses-icon-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:8px; }
+#spses-icon-grid .spses-picker-icon { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; min-height:90px; padding:10px 5px; border:1px solid #c3c4c7; background:#fff; color:#1d2327; cursor:pointer; }
+#spses-icon-grid .spses-picker-icon:hover { background:#f0f6fc; border-color:#2271b1; }
+#spses-icon-grid .spses-picker-icon:focus-visible { outline:2px solid #2271b1; outline-offset:2px; }
+#spses-icon-grid .spses-picker-icon i { font-size:27px; }
+#spses-icon-grid .spses-picker-icon span { font-size:11px; overflow-wrap:anywhere; }
+@media(max-width:782px) {
+    .spses-sdm-icons-admin .spses-icon-name { min-width:0; display:block; }
+    .spses-sdm-icons-admin .spses-icons-table .button { margin-top:5px; }
+}

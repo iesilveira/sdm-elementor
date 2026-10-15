@@ -1,0 +1,19 @@
+/* SPSES: ícones decorativos à esquerda dos títulos. */
+.icd-central .icd-document-title {
+    display:flex;
+    align-items:center;
+    column-gap:var(--icd-file-icon-gap,.5em);
+    min-width:0;
+}
+.icd-central .icd-file-type-icon {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    flex:0 0 auto;
+    width:1.15em;
+    min-width:1em;
+    line-height:1;
+}
+.icd-central .icd-file-type-icon i { display:inline-block; line-height:1; }
+.icd-central .icd-file-type-icon svg { display:block; width:1em; height:1em; fill:currentColor; }
+.icd-central .icd-document-title > a { min-width:0; overflow-wrap:anywhere; }

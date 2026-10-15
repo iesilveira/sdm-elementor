@@ -1,0 +1,30 @@
+/*
+ * SPSES / SDM: criação e edição no editor clássico.
+ * Apenas apresentação: nenhum campo é desabilitado ou removido do DOM.
+ * A descrição SDM mantém seu nonce e seu editor originais.
+ */
+body.spses-sdm-simple-editor #poststuff #post .postbox:not(#sdm_description_meta_box):not(#sdm_upload_meta_box):not(#sdm_categoriesdiv):not(#submitdiv) {
+    display: none !important;
+}
+/* A estrutura padrão do WordPress coloca #poststuff dentro do formulário #post. */
+body.spses-sdm-simple-editor #post #poststuff .postbox:not(#sdm_description_meta_box):not(#sdm_upload_meta_box):not(#sdm_categoriesdiv):not(#submitdiv) {
+    display: none !important;
+}
+/* Mantém os quatro metaboxes necessários, mesmo com preferências antigas. */
+body.spses-sdm-simple-editor #post #sdm_description_meta_box,
+body.spses-sdm-simple-editor #post #sdm_upload_meta_box,
+body.spses-sdm-simple-editor #post #sdm_categoriesdiv,
+body.spses-sdm-simple-editor #post #submitdiv {
+    display: block !important;
+}
+/* O SDM tem sua própria descrição; não exibir um segundo editor do WordPress. */
+body.spses-sdm-simple-editor #post #postdivrich,
+body.spses-sdm-simple-editor #post #postdiv,
+body.spses-sdm-simple-editor #post #edit-slug-box,
+body.spses-sdm-simple-editor #post #submitdiv #misc-publishing-actions {
+    display: none !important;
+}
+/* Mantidos: título, descrição SDM, seletor nativo de arquivo, categorias,
+ * botões salvar/publicar/atualizar, prévia e lixeira.
+ * Não ocultar avisos administrativos nem o seletor de mídia.
+ */
