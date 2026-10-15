@@ -1,0 +1,54 @@
+{
+  "versao": "2.0.0",
+  "escopo": "Validação de sintaxe, empacotamento e regras do renderer com stubs, quando ferramentas disponíveis.",
+  "nao_testado": "WordPress real, Elementor real, SDM real, navegador, tema, cache, proteções e plugins externos.",
+  "verificacoes": [
+    {
+      "arquivo": "assets/index.php",
+      "teste": "PHP lint",
+      "ok": true,
+      "resultado": "No syntax errors detected in /mnt/data/central_documentos_v2_build/central-documentos/assets/index.php"
+    },
+    {
+      "arquivo": "central-documentos.php",
+      "teste": "PHP lint",
+      "ok": true,
+      "resultado": "No syntax errors detected in /mnt/data/central_documentos_v2_build/central-documentos/central-documentos.php"
+    },
+    {
+      "arquivo": "includes/class-elementor-widget.php",
+      "teste": "PHP lint",
+      "ok": true,
+      "resultado": "No syntax errors detected in /mnt/data/central_documentos_v2_build/central-documentos/includes/class-elementor-widget.php"
+    },
+    {
+      "arquivo": "includes/class-tree-renderer.php",
+      "teste": "PHP lint",
+      "ok": true,
+      "resultado": "No syntax errors detected in /mnt/data/central_documentos_v2_build/central-documentos/includes/class-tree-renderer.php"
+    },
+    {
+      "arquivo": "includes/index.php",
+      "teste": "PHP lint",
+      "ok": true,
+      "resultado": "No syntax errors detected in /mnt/data/central_documentos_v2_build/central-documentos/includes/index.php"
+    },
+    {
+      "arquivo": "index.php",
+      "teste": "PHP lint",
+      "ok": true,
+      "resultado": "No syntax errors detected in /mnt/data/central_documentos_v2_build/central-documentos/index.php"
+    },
+    {
+      "arquivo": "assets/central-documentos.js",
+      "teste": "Node syntax check",
+      "ok": true,
+      "resultado": "OK"
+    },
+    {
+      "teste": "Renderer com stubs PHP (não integração)",
+      "ok": true,
+      "resultado": "PASS: Preserva pai, filha e neta e oculta categoria vazia.\nPASS: Escapa nomes de categorias.\nPASS: Escapa títulos de documentos.\nPASS: Documentos diretos não duplicados nos ancestrais.\nPASS: Não inclui ramo não solicitado.\nPASS: Modo folhas exclui documento associado apenas ao pai.\nPASS: Exibição opcional de categoria vazia.\nPASS: Tudo aberto com exclusividade abre só primeira irmã de cada nível.\nPASS: Proteção contra ciclo no ramo."
+    }
+  ]
+}
